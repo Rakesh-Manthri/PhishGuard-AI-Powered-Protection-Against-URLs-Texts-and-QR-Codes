@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>PhishGuard — Multi‑modal phishing detector</title>
+    <meta http-equiv="refresh" content="0; url=./web/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <h1>PhishGuard 🛡️</h1>
+        <p>Multi‑modal phishing detector — paste message, URL or upload a QR</p>
+    </header>
+
+    <main>
+        <div class="chat-container" id="chat-container">
+            <div class="bot-message">👩‍⚕️ Hello! I’m your health assistant. Ask me about disease symptoms, vaccination schedules, or preventive care.</div>
+        </div>
+
+        <div class="input-container">
+            <input type="text" id="user-input" placeholder="Type your question..." />
+            <button id="send-btn" onclick="sendMessage()">Send</button>
+        </div>
+
+        <!-- Phishing analysis result banner -->
+        <div id="phish-result" class="result-banner" aria-live="polite" hidden>
+            <div id="phish-status" class="risk-low">No analysis yet</div>
+            <ul id="phish-explain" class="explain-list" aria-hidden="true"></ul>
+            <div class="result-actions">
+                <label class="small-control"><input type="checkbox" id="enable-backend" checked> Use server scan</label>
+                <input id="backend-endpoint" class="endpoint-input" placeholder="Optional backend URL (e.g. http://localhost:8501/scan)" />
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>Powered by AI | For educational purposes only, not a substitute for doctors</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
