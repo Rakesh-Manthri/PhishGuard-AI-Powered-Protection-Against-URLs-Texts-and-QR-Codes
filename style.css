@@ -1,0 +1,122 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f8fa;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background: #2d89ef;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+.chat-container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 15px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    height: 400px;
+    overflow-y: auto;
+}
+
+.bot-message,
+.user-message {
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 8px;
+    max-width: 80%;
+}
+
+.bot-message {
+    background: #e1f5fe;
+    align-self: flex-start;
+}
+
+.user-message {
+    background: #dcedc8;
+    align-self: flex-end;
+    text-align: right;
+}
+
+.input-container {
+    display: flex;
+    justify-content: center;
+    margin: 15px;
+}
+
+input {
+    width: 70%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+button {
+    padding: 10px 15px;
+    margin-left: 10px;
+    border: none;
+    background: #2d89ef;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* Phishing result banner */
+.result-banner {
+    max-width: 600px;
+    margin: 0 auto 20px auto;
+    background: linear-gradient(90deg, #ffffff, #fbfdff);
+    border-radius: 8px;
+    padding: 12px 16px;
+    box-shadow: 0 1px 4px rgba(16,24,40,0.06);
+    border: 1px solid #eef2ff;
+}
+
+.result-banner .risk-high {
+    color: #7f1d1d;
+    background: #fff1f2;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+}
+.result-banner .risk-medium {
+    color: #92400e;
+    background: #fff7ed;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+}
+.result-banner .risk-low {
+    color: #065f46;
+    background: #ecfdf5;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.explain-list {
+    margin: 8px 0 0 18px;
+    color: #374151;
+    line-height: 1.4;
+}
+
+.small-control {
+    font-size: 13px;
+    color: #374151;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.endpoint-input {
+    margin-left: 12px;
+    padding: 6px 8px;
+    font-size: 13px;
+    border-radius: 6px;
+    border: 1px solid #e6edf3;
+    width: 45%;
+}
