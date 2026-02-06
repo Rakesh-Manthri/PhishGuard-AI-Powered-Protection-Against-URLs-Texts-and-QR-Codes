@@ -1,28 +1,80 @@
-# Website + PhishGuard (local dev)
+# 🛡️ PhishGuard - AI-Powered Phishing Protection
 
-This workspace contains a small frontend (static HTML/JS), a Node chat server, and a lightweight Python PhishGuard API for phishing detection.
+PhishGuard is a comprehensive phishing detection system that uses Machine Learning to identify malicious URLs in real-time. It includes a Web Dashboard, a REST API, and a Chrome Extension for active browsing protection.
 
-Quick run (recommended):
+## ✨ Features
+- **Real-Time Analysis**: Scans URLs instantly using a trained XGBoost model.
+- **Chrome Extension**: Protects you while you browse by showing warning banners on suspicious sites.
+- **Web Dashboard**: Manually check URLs via a clean web interface.
+- **High Accuracy**: Trained on over 65,000 verified phishing and benign URLs.
 
-- Serve frontend: `npm run serve-web` → http://localhost:5500
-- Start chat server: `npm run start-node` → http://localhost:3000
-- Start API: (in a Python venv) `uvicorn api.app:app --reload --port 8000` → http://localhost:8000
+---
 
-Or run services in separate terminals. See `api/README.md` for Python setup.
+## 🚀 Getting Started
 
-## Dev helpers (new)
-- Start frontend + API (single command):
-  - `npm run dev`  — runs `tools/dev-start.ps1` (starts frontend & API, opens browser)
-- Train local text model (uses scikit-learn):
-  - `npm run train`  — runs `PhishGuard/train_text_model.py` and writes `PhishGuard/models/text_model.joblib`
+### Prerequisites
+- **Python 3.8+**
+- **Node.js & npm** (for the web dashboard)
 
-## How to train and verify
-1. Create & activate Python venv and install deps:
-   - `python -m venv .venv; .\.venv\Scripts\Activate; pip install -r PhishGuard/requirements.txt`
-2. Train (small example dataset included):
-   - `python PhishGuard/train_text_model.py` (or `npm run train`)
-3. Verify model is loaded by the API:
-   - `curl http://127.0.0.1:8000/health` → `"local_model_loaded": true` when a model is present
-4. Run an end-to-end scan from the UI (ensure "Use server scan" is checked) or call:
-   - `curl -X POST http://127.0.0.1:8000/phishguard/scan -d '{"text":"Your account is locked!"}' -H 'Content-Type: application/json'`
+### 1. Backend Setup (API)
+The API handles the machine learning inference.
 
+1. Install Python dependencies:
+   ```bash
+   pip install flask flask-cors pandas joblib scikit-learn xgboost
+   ```
+
+2. Start the API server:
+   ```bash
+   python api.py
+   ```
+   > The API will start on **http://127.0.0.1:5000**. Keep this terminal open.
+
+### 2. Web Dashboard Setup
+The dashboard allows you to test URLs manually.
+
+1. Install Node.js dependencies:
+   ```bash
+   npm install
+   ```
+
+2. Start the web server:
+   ```bash
+   npm run serve-web
+   ```
+   > The dashboard will open at **http://localhost:5500**.
+
+### 3. Chrome Extension Setup
+Enable real-time protection in your browser.
+
+1. Open Chrome and navigate to `chrome://extensions/`.
+2. Toggle **Developer mode** (top right).
+3. Click **Load unpacked**.
+4. Select the `extension` folder located in this repository.
+5. The PhishGuard icon should appear in your toolbar.
+
+---
+
+## 🧠 Machine Learning Model
+The system uses an **XGBoost Classifier** trained on linguistic and structural features of URLs (e.g., length, special characters, IP usage).
+
+- **Training**: To retrain the model with the provided dataset:
+  ```bash
+  python train_model.py
+  ```
+  This will generate a new `phishing_detector_model.pkl` file.
+
+- **Prediction (CLI)**: To test a URL from the command line:
+  ```bash
+  python predict.py "http://suspect-url.com"
+  ```
+
+## 📁 Project Structure
+- **`api.py`**: Flask API server for model inference.
+- **`extension/`**: Source code for the Chrome Extension (manifest, scripts, popup).
+- **`train_model.py`**: Script to train the XGBoost model.
+- **`verified_online.csv`**: Dataset used for training (in `DataSets/`).
+- **`index.html`**: Main file for the Web Dashboard.
+
+## ⚠️ Note
+This project is for educational and research purposes. While highly accurate, no anti-phishing tool is 100% perfect. Always verify URLs carefully.
