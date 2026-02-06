@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PhishGuard</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">🛡️</div>
+      <h1>PhishGuard</h1>
+      <p class="subtitle">AI-Powered Phishing Protection</p>
+    </div>
+    
+    <div class="status-section">
+      <div id="status-indicator" class="status-indicator loading">
+        <div class="spinner"></div>
+      </div>
+      <div id="status-text" class="status-text">Checking current page...</div>
+      <div id="url-display" class="url-display"></div>
+    </div>
+    
+    <div id="result-section" class="result-section" style="display: none;">
+      <div id="result-icon" class="result-icon"></div>
+      <div id="result-message" class="result-message"></div>
+      <div id="confidence-bar" class="confidence-bar">
+        <div id="confidence-fill" class="confidence-fill"></div>
+      </div>
+      <div id="confidence-text" class="confidence-text"></div>
+    </div>
+    
+    <div class="actions">
+      <button id="check-again" class="btn btn-primary">Check Again</button>
+    </div>
+    
+    <div class="footer">
+      <p>Protected by AI • 84% Accuracy</p>
+      <p class="small">Scanned 65,000+ URLs</p>
+    </div>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>

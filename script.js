@@ -1,63 +1,84 @@
 const chatContainer = document.getElementById("chat-container");
+const DEFAULT_BACKEND = 'http://127.0.0.1:5000/check';
 
 async function sendMessage() {
     const userInputEl = document.getElementById('user-input');
-    const userInput = userInputEl.value;
+    const userInput = userInputEl.value.trim();
     if (!userInput) return;
 
     // Add user message
-    const userMsg = document.createElement('div');
-    userMsg.className = 'user-message';
-    userMsg.innerText = '🧑 ' + userInput;
-    chatContainer.appendChild(userMsg);
-    chatContainer.scrollTop = chatContainer.scrollHeight;
+    addMessage('user', userInput);
     userInputEl.value = '';
 
-    // 1) Immediate client analysis + UI
-    const clientResult = await analyzeClient(userInput);
-    displayResultBanner(clientResult.clientScore, clientResult.details);
+    // Show "Analyzing..."
+    const loadingId = addMessage('bot', '🔍 Analyzing URL...');
 
-    // 2) Fire-and-forget backend phishing scan (if enabled). Non-blocking and merges results when available.
-    if (enableBackendEl && enableBackendEl.checked) {
-        const endpoint = (backendEndpointEl && backendEndpointEl.value) ? backendEndpointEl.value : DEFAULT_BACKEND;
-        postWithTimeout(endpoint, { text: userInput, urls: clientResult.urlScores.map(u => u.url) }, 1600)
-            .then(serverRes => {
-                if (!serverRes) return;
-                // serverRes expected: { score: 0.8, label: 'phish', explain: [...] }
-                const serverScore = Number(serverRes.score || 0);
-                const merged = Math.max(clientResult.clientScore, serverScore);
-                const mergedDetails = [...clientResult.details];
-                if (serverRes.explain && serverRes.explain.length) mergedDetails.push(...serverRes.explain.slice(0, 5));
-                mergedDetails.push(`fused with server (score ${serverScore})`);
-                displayResultBanner(Number(merged.toFixed(3)), mergedDetails);
-            });
+    try {
+        // Send to YOUR PhishGuard API (api.py)
+        const response = await fetch(DEFAULT_BACKEND, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url: userInput })
+        });
+
+        const result = await response.json();
+
+        // Remove loading message
+        document.getElementById(loadingId).remove();
+
+        // Show Result
+        if (result.error) {
+            addMessage('bot', '❌ Error: ' + result.error);
+        } else {
+            const confidence = (result.confidence * 100).toFixed(2);
+            let icon = result.is_phishing ? '⚠️' : '✅';
+            let status = result.is_phishing ? 'PHISHING DETECTED' : 'SAFE';
+            let color = result.is_phishing ? '#dc2626' : '#10b981';
+
+            const messageHtml = `
+                <div style="border-left: 4px solid ${color}; padding-left: 10px;">
+                    <h3>${icon} ${status}</h3>
+                    <p><strong>URL:</strong> ${result.url}</p>
+                    <p><strong>Confidence:</strong> ${confidence}%</p>
+                    <p>${result.is_phishing ? 'Be careful! This site looks suspicious.' : 'You are safe to visit this site.'}</p>
+                </div>
+            `;
+
+            addMessage('bot', messageHtml, true);
+        }
+
+    } catch (err) {
+        document.getElementById(loadingId).remove();
+        addMessage('bot', '❌ Connection Failed. Is the backend running?\n(Run `start_api.bat`)');
+        console.error(err);
+    }
+}
+
+function addMessage(type, text, isHtml = false) {
+    const msgDiv = document.createElement('div');
+    msgDiv.className = type === 'user' ? 'user-message' : 'bot-message';
+    msgDiv.id = 'msg-' + Date.now();
+
+    if (isHtml) {
+        msgDiv.innerHTML = text;
+    } else {
+        msgDiv.innerText = (type === 'user' ? '🧑 ' : '🛡️ ') + text;
     }
 
-    // 3) Preserve existing chat behavior — send message to chat backend and show reply when available (non-blocking)
-    (async() => {
-        try {
-            const response = await fetch('http://localhost:3000/chat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: userInput })
-            });
-            const data = await response.json();
-            const botMsg = document.createElement('div');
-            botMsg.className = 'bot-message';
-            botMsg.innerText = '👩‍⚕️ ' + (data.reply || data.message || 'No reply');
-            chatContainer.appendChild(botMsg);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        } catch (err) {
-            // keep UI responsive; optionally log to console
-            console.debug('chat backend unavailable', err && err.message);
-        }
-    })();
+    chatContainer.appendChild(msgDiv);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+    return msgDiv.id;
 }
 
 // Allow pressing Enter to send
 document.getElementById('user-input').addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
-        document.getElementById('send-btn').click();
+        sendMessage();
     }
 });
+
+// Initial Welcome Message
+setTimeout(() => {
+    addMessage('bot', 'Welcome to PhishGuard! 🛡️\nPaste a URL below to check if it is a phishing link.');
+}, 500);
