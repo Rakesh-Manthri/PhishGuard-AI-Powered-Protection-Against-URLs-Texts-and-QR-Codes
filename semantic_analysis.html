@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhishGuard | Semantic Analysis</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <nav>
+            <a href="index.html" class="logo">
+                <span class="material-icons-round" style="color: var(--primary);">shield</span>
+                PhishGuard
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="url_detection.html">URL Scan</a>
+                <a href="qr_detection.html">QR Scan</a>
+                <a href="semantic_analysis.html" class="active">Text Analysis</a>
+            </div>
+            <div class="nav-auth">
+                <a href="index.html#login" class="btn btn-secondary">Login</a>
+                <a href="index.html#signup" class="btn btn-primary">Get Started</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="tool-container glass-panel">
+        <div class="tool-header">
+            <span class="material-icons-round feature-icon">text_fields</span>
+            <h2>Semantic Analysis</h2>
+            <p>Paste suspicious email or message text here. Our AI will analyze the intent, urgency, and tone.</p>
+        </div>
+
+        <div class="input-group">
+            <textarea id="text-input"
+                placeholder="Example: 'Dear customer, your account has been compromised. Click here immediately to verify...'"
+                required></textarea>
+        </div>
+
+        <button id="analyze-btn" class="btn btn-primary" onclick="analyzeText()">
+            <span class="material-icons-round" style="vertical-align: middle; margin-right: 8px;">analytics</span>
+            Analyze Content
+        </button>
+
+        <div id="text-result-container" class="result-area">
+            <div id="text-loading" style="display: none; text-align: center;">Analyzing Semantics...</div>
+            <div id="text-result-content"></div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 PhishGuard AI. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

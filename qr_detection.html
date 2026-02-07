@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhishGuard | QR Detection</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <nav>
+            <a href="index.html" class="logo">
+                <span class="material-icons-round" style="color: var(--primary);">shield</span>
+                PhishGuard
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="url_detection.html">URL Scan</a>
+                <a href="qr_detection.html" class="active">QR Scan</a>
+                <a href="semantic_analysis.html">Text Analysis</a>
+            </div>
+            <div class="nav-auth">
+                <a href="index.html#login" class="btn btn-secondary">Login</a>
+                <a href="index.html#signup" class="btn btn-primary">Get Started</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="tool-container glass-panel">
+        <div class="tool-header">
+            <span class="material-icons-round feature-icon">qr_code_scanner</span>
+            <h2>QR Code Scanner</h2>
+            <p>Upload a QR code image to detect malicious redirects.</p>
+        </div>
+
+        <div class="upload-area" id="drop-area">
+            <span class="material-icons-round" style="font-size: 3rem; color: var(--text-muted);">file_upload</span>
+            <p>Drag & Drop QR Code Image here</p>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin: 1rem 0;">OR</p>
+            <input type="file" id="qr-file-input" hidden accept="image/*">
+            <button class="btn btn-secondary" onclick="document.getElementById('qr-file-input').click()">Browse
+                Files</button>
+        </div>
+
+        <div id="preview" style="text-align: center; margin-top: 2rem; display: none;">
+            <img id="qr-preview-img" src="" alt="QR Preview" style="max-width: 200px; border-radius: 8px;">
+            <br><br>
+            <button class="btn btn-primary" onclick="scanQR()">Start Analysis</button>
+        </div>
+
+        <div id="qr-result-container" class="result-area">
+            <div id="qr-loading" style="display: none; text-align: center;">Processing...</div>
+            <div id="qr-result-content"></div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 PhishGuard AI. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Simple drag & drop logic
+        const dropArea = document.getElementById('drop-area');
+        const fileInput = document.getElementById('qr-file-input');
+        const preview = document.getElementById('preview');
+        const previewImg = document.getElementById('qr-preview-img');
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        dropArea.addEventListener('drop', handleDrop, false);
+        fileInput.addEventListener('change', handleFiles, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles({ target: { files: files } });
+        }
+
+        function handleFiles(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onloadend = function () {
+                    previewImg.src = reader.result;
+                    preview.style.display = 'block';
+                    dropArea.style.display = 'none';
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

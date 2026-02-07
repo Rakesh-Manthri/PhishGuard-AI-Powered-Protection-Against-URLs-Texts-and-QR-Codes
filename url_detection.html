@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhishGuard | URL Detection</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <nav>
+            <a href="index.html" class="logo">
+                <span class="material-icons-round" style="color: var(--primary);">shield</span>
+                PhishGuard
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="url_detection.html" class="active">URL Scan</a>
+                <a href="qr_detection.html">QR Scan</a>
+                <a href="semantic_analysis.html">Text Analysis</a>
+            </div>
+            <div class="nav-auth">
+                <a href="index.html#login" class="btn btn-secondary">Login</a>
+                <a href="index.html#signup" class="btn btn-primary">Get Started</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="tool-container glass-panel">
+        <div class="tool-header">
+            <span class="material-icons-round feature-icon">link</span>
+            <h2>URL Scanner</h2>
+            <p>Paste any URL below to analyze it for phishing indicators.</p>
+        </div>
+
+        <div class="input-group">
+            <input type="url" id="url-input" placeholder="https://example.com/login..." required>
+        </div>
+
+        <button id="scan-btn" class="btn btn-primary" onclick="scanURL()">
+            <span class="material-icons-round" style="vertical-align: middle; margin-right: 8px;">search</span>
+            Scan URL
+        </button>
+
+        <div id="result-container" class="result-area">
+            <!-- Results will be injected here -->
+            <div id="loading" style="display: none; text-align: center;">
+                <span class="material-icons-round" style="animation: spin 1s linear infinite;">sync</span>
+                Analyzing...
+            </div>
+            <div id="result-content"></div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 PhishGuard AI. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

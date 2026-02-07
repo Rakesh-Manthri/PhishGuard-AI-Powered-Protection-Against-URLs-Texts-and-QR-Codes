@@ -3,9 +3,27 @@ from flask_cors import CORS
 import joblib
 import pandas as pd
 import re
+import sqlite3
+import os
+from werkzeug.security import generate_password_hash, check_password_hash
 from urllib.parse import urlparse
 
 app = Flask(__name__)
+# Database Setup
+DB_NAME = "users.db"
+
+def init_db():
+    if not os.path.exists(DB_NAME):
+        conn = sqlite3.connect(DB_NAME)
+        c = conn.cursor()
+        c.execute('''CREATE TABLE users
+                     (id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                      email TEXT UNIQUE NOT NULL, 
+                      password TEXT NOT NULL)''')
+        conn.commit()
+        conn.close()
+        print("Database initialized.")
+
 # Allow CORS from all origins including chrome extensions
 CORS(app, resources={
     r"/*": {
@@ -15,9 +33,18 @@ CORS(app, resources={
     }
 })
 # Load the trained model
-print("Loading model...")
-model = joblib.load('phishing_detector_model.pkl')
-print("Model loaded successfully!")
+try:
+    print("Loading model...")
+    model = joblib.load('phishing_detector_model.pkl')
+    print("Model loaded successfully!")
+except:
+    print("Warning: Model file not found. Prediction will mock responses for testing.")
+    model = None
+
+# Regex Patterns
+# Regex Patterns
+EMAIL_REGEX = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+PASSWORD_REGEX = r'^(?=.*[A-Za-z])(?=.*\d).{8,}$' # Min 8 chars, at least 1 letter and 1 number
 
 def extract_features(url):
     """Extracts features from a URL for phishing detection."""
@@ -117,10 +144,74 @@ def check_url():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/register', methods=['POST'])
+def register():
+    """Register a new user."""
+    data = request.get_json()
+    email = data.get('email')
+    password = data.get('password')
+
+    # Validation
+    if not email or not password:
+        return jsonify({'error': 'Email and password are required'}), 400
+    
+    if not re.match(EMAIL_REGEX, email):
+        return jsonify({'error': 'Invalid email format'}), 400
+        
+    if not re.match(PASSWORD_REGEX, password):
+        return jsonify({'error': 'Password must be at least 8 characters long and contain at least one number'}), 400
+
+    try:
+        conn = sqlite3.connect(DB_NAME)
+        c = conn.cursor()
+        
+        # Check if user exists
+        c.execute("SELECT * FROM users WHERE email=?", (email,))
+        if c.fetchone():
+            conn.close()
+            return jsonify({'error': 'User already exists'}), 409
+
+        # Hash password and save
+        hashed_password = generate_password_hash(password)
+        c.execute("INSERT INTO users (email, password) VALUES (?, ?)", (email, hashed_password))
+        conn.commit()
+        conn.close()
+        
+        return jsonify({'message': 'User registered successfully'}), 201
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/login', methods=['POST'])
+def login():
+    """Login a user."""
+    data = request.get_json()
+    email = data.get('email')
+    password = data.get('password')
+
+    if not email or not password:
+        return jsonify({'error': 'Email and password are required'}), 400
+
+    try:
+        conn = sqlite3.connect(DB_NAME)
+        c = conn.cursor()
+        c.execute("SELECT password FROM users WHERE email=?", (email,))
+        row = c.fetchone()
+        conn.close()
+
+        if row and check_password_hash(row[0], password):
+            return jsonify({'message': 'Login successful', 'email': email}), 200
+        else:
+            return jsonify({'error': 'Invalid email or password'}), 401
+            
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/health', methods=['GET'])
 def health():
     """Health check endpoint."""
     return jsonify({'status': 'healthy', 'model_loaded': True})
 
 if __name__ == '__main__':
+    init_db()  # Initialize database on start
     app.run(host='0.0.0.0', port=5000, debug=True)
