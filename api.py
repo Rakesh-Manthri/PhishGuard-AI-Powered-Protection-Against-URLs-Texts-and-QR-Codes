@@ -7,6 +7,8 @@ import sqlite3
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
 from urllib.parse import urlparse
+# Homoglyph detection utility
+from utils.unicode_homoglyph import detect_homoglyph, analyze_hostname
 
 app = Flask(__name__)
 # Database Setup
@@ -51,9 +53,10 @@ def extract_features(url):
     features = {}
     
     url = str(url)
-    
-    # Normalize URL: strip protocols and www
-    clean_url = url.replace('https://', '').replace('http://', '').replace('www.', '')
+    # Safer parsing: extract hostname and include path (do NOT mangle IDNs/punycode)
+    parsed = urlparse(url)
+    hostname = parsed.hostname or ""
+    clean_url = hostname + (parsed.path or "")
     
     # 1. URL Length
     features['url_length'] = len(clean_url)
@@ -72,13 +75,9 @@ def extract_features(url):
     
     # 4. Hostname analysis
     try:
-        parse_url = 'http://' + clean_url
-        parsed = urlparse(parse_url)
-        hostname = parsed.netloc
-        
         features['hostname_length'] = len(hostname)
         features['digit_count_hostname'] = sum(c.isdigit() for c in hostname)
-    except:
+    except Exception:
         features['hostname_length'] = 0
         features['digit_count_hostname'] = 0
 
@@ -93,6 +92,27 @@ def check_url():
         
         if not url:
             return jsonify({'error': 'No URL provided'}), 400
+        # ---- HARD RULE: Unicode homoglyph detection (before whitelist) ----
+        try:
+            is_homoglyph, matched_brand = detect_homoglyph(url)
+            if is_homoglyph:
+                original_h, normalized_h, skeleton = analyze_hostname(url)
+                return jsonify({
+                    'url': url,
+                    'is_phishing': True,
+                    'confidence': 0.999,
+                    'label': 'PHISHING (homoglyph)',
+                    'unicode_homoglyph': {
+                        'is_homoglyph_attack': True,
+                        'matched_brand': matched_brand,
+                        'original_hostname': original_h,
+                        'normalized_hostname': normalized_h,
+                        'skeleton': skeleton
+                    }
+                })
+        except Exception:
+            # Fail open on homoglyph detection errors and continue with other checks
+            pass
             
         # WHITELIST: Trust big domains immediately to avoid false positives
         # Google search URLs are long and have many query params, which confuses the model
@@ -131,13 +151,14 @@ def check_url():
         # Predict
         prediction = model.predict(df_features)[0]
         probability = model.predict_proba(df_features)[0]
-        
+
         result = {
             'url': url,
             'is_phishing': bool(prediction == 1),
             'confidence': float(max(probability)),
             'label': 'PHISHING' if prediction == 1 else 'SAFE'
         }
+        # Note: unicode homoglyph detection is performed earlier (hard fail-fast)
         
         return jsonify(result)
     
