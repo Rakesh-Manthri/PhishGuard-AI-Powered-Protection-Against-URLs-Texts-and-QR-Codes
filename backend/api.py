@@ -10,7 +10,9 @@ from urllib.parse import urlparse
 
 app = Flask(__name__)
 # Database Setup
-DB_NAME = "users.db"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_NAME = os.path.join(BASE_DIR, "users.db")
+MODEL_PATH = os.path.join(BASE_DIR, "phishing_detector_model.pkl")
 
 def init_db():
     if not os.path.exists(DB_NAME):
@@ -22,7 +24,7 @@ def init_db():
                       password TEXT NOT NULL)''')
         conn.commit()
         conn.close()
-        print("Database initialized.")
+        print(f"Database initialized at {DB_NAME}")
 
 # Allow CORS from all origins including chrome extensions
 CORS(app, resources={
@@ -34,8 +36,8 @@ CORS(app, resources={
 })
 # Load the trained model
 try:
-    print("Loading model...")
-    model = joblib.load('phishing_detector_model.pkl')
+    print(f"Loading model from {MODEL_PATH}...")
+    model = joblib.load(MODEL_PATH)
     print("Model loaded successfully!")
 except:
     print("Warning: Model file not found. Prediction will mock responses for testing.")

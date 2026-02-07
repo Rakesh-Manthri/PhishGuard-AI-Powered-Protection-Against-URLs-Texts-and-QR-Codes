@@ -1,11 +1,27 @@
 # Python
-.venv/
 __pycache__/
 *.py[cod]
+.venv/
+venv/
+*.env
+
+# Database (CRITICAL: Do not commit sensitive data)
+*.db
+*.sqlite
 
 # Node
 node_modules/
-.DS_Store
+npm-debug.log
+yarn-error.log
 
 # IDE
 .vscode/
+.idea/
+
+# System
+.DS_Store
+Thumbs.db
+
+# Build
+dist/
+build/

@@ -4,7 +4,7 @@
     "version": "0.1.0",
     "type": "module",
     "scripts": {
-        "serve-web": "npx http-server . -p 5500",
+        "serve-web": "npx http-server frontend -p 5500",
         "serve-web:py": "python -m http.server 5500 --directory web",
         "serve-web:auto": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/serve-web.ps1",
         "dev": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/dev-start.ps1",

@@ -24,8 +24,9 @@ The API handles the machine learning inference.
    pip install flask flask-cors pandas joblib scikit-learn xgboost
    ```
 
-2. Start the API server:
+2. Navigate to the backend directory and start the API server:
    ```bash
+   cd backend
    python api.py
    ```
    > The API will start on **http://127.0.0.1:5000**. Keep this terminal open.
@@ -60,21 +61,26 @@ The system uses an **XGBoost Classifier** trained on linguistic and structural f
 
 - **Training**: To retrain the model with the provided dataset:
   ```bash
+  cd backend
   python train_model.py
   ```
   This will generate a new `phishing_detector_model.pkl` file.
 
 - **Prediction (CLI)**: To test a URL from the command line:
   ```bash
+  cd backend
   python predict.py "http://suspect-url.com"
   ```
 
 ## 📁 Project Structure
-- **`api.py`**: Flask API server for model inference.
+- **`backend/`**: Contains API server, ML models, and database.
+  - `api.py`: Flask API server.
+  - `phishing_detector_model.pkl`: Trained XGBoost model.
+  - `users.db`: SQLite database for user data.
+- **`frontend/`**: Contains the web dashboard (HTML/CSS/JS).
+  - `index.html`: Main landing page.
+  - `url_detection.html`, `qr_detection.html`: Specialized tool pages.
 - **`extension/`**: Source code for the Chrome Extension (manifest, scripts, popup).
-- **`train_model.py`**: Script to train the XGBoost model.
-- **`verified_online.csv`**: Dataset used for training (in `DataSets/`).
-- **`index.html`**: Main file for the Web Dashboard.
 
 ## ⚠️ Note
 This project is for educational and research purposes. While highly accurate, no anti-phishing tool is 100% perfect. Always verify URLs carefully.
