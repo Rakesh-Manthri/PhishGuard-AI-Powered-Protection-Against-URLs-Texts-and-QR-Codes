@@ -46,7 +46,13 @@
         </div>
 
         <div id="preview" style="text-align: center; margin-top: 2rem; display: none;">
-            <img id="qr-preview-img" src="" alt="QR Preview" style="max-width: 200px; border-radius: 8px;">
+            <div style="position: relative; display: inline-block;">
+                <img id="qr-preview-img" src="" alt="QR Preview" style="max-width: 200px; border-radius: 8px;">
+                <span class="material-icons-round" onclick="clearQR()"
+                    style="position: absolute; top: -10px; right: -10px; background: #ef4444; color: white; border-radius: 50%; padding: 4px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+                    close
+                </span>
+            </div>
             <br><br>
             <button class="btn btn-primary" onclick="scanQR()">Start Analysis</button>
         </div>
@@ -98,6 +104,14 @@
                     dropArea.style.display = 'none';
                 }
             }
+        }
+
+        function clearQR() {
+            preview.style.display = 'none';
+            dropArea.style.display = 'flex';
+            previewImg.src = '';
+            fileInput.value = '';
+            document.getElementById('qr-result-container').style.display = 'none';
         }
     </script>
 </body>

@@ -209,10 +209,145 @@ def login():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+# QR Code Scan Endpoint
+@app.route('/scan_qr', methods=['POST'])
+def scan_qr():
+    """Extracts URL from a QR code image and checks it."""
+    try:
+        if 'file' not in request.files:
+            return jsonify({'error': 'No file part'}), 400
+        
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({'error': 'No selected file'}), 400
+
+        # Read the image using OpenCV
+        import cv2
+        import numpy as np
+
+        # Decode image from buffer
+        nparr = np.frombuffer(file.read(), np.uint8)
+        img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+        # Use OpenCV's built-in QR Code detector (No external DLLs required)
+        detector = cv2.QRCodeDetector()
+        
+        # Strategy 1: Original Image
+        extracted_data, points, _ = detector.detectAndDecode(img)
+        
+        # Strategy 2: Grayscale (Better for colored QRs)
+        if not extracted_data:
+            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            extracted_data, points, _ = detector.detectAndDecode(gray)
+            
+        # Strategy 3: Binary Thresholding (Best for low contrast/bad lighting)
+        if not extracted_data:
+            # Ensure gray exists (it should from Strategy 2)
+            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            _, thresh = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
+            extracted_data, points, _ = detector.detectAndDecode(thresh)
+
+        if not extracted_data:
+             return jsonify({'error': 'No QR code found. Try identifying the QR code with a better quality image.'}), 400
+        
+        print(f"Extracted QR Data: {extracted_data}")
+
+        # Check if it's a URL
+        is_url = extracted_data.startswith('http://') or extracted_data.startswith('https://') or 'www.' in extracted_data
+        
+        if not is_url:
+             # It's plain text. Run basic keyword analysis (Mini Semantic Engine)
+             lower_text = extracted_data.lower()
+             
+             threat_keywords = [
+                 'otp', 'password', 'pin', 'cvv', 'verification code',
+                 'urgent', 'immediately', 'suspend', 'block', 'expire',
+                 'winner', 'prize', 'congratulations', 'lottery',
+                 'bank', 'account', 'verify'
+             ]
+             
+             found_threats = [word for word in threat_keywords if word in lower_text]
+             
+             if found_threats:
+                 return jsonify({
+                     'url': extracted_data,
+                     'is_phishing': True,
+                     'label': 'SUSPICIOUS TEXT',
+                     'confidence': 0.85,
+                     'reasons': sorted(found_threats)
+                 })
+             else:
+                 return jsonify({
+                     'url': extracted_data,
+                     'is_phishing': False,
+                     'label': 'SAFE TEXT',
+                     'confidence': 0.0
+                 })
+
+        # Re-use the existing check_url logic internally
+        # We Mock the request payload for the check_url function logic
+        # OR better, just refactor the core logic out. 
+        # For simplicity, let's just call the same logic here directly.
+        
+        # 1. Check Whitelist
+        parsed = urlparse(extracted_data)
+        domain = parsed.netloc.lower()
+        if domain.startswith('www.'): domain = domain[4:]
+        
+        trusted_domains = [
+            'google.com', 'github.com', 'stackoverflow.com', 'microsoft.com', 
+            'apple.com', 'amazon.com', 'youtube.com', 'linkedin.com', 
+            'twitter.com', 'facebook.com', 'instagram.com', 'wikipedia.org'
+        ]
+        
+        if domain in trusted_domains or any(domain.endswith('.' + d) for d in trusted_domains):
+            return jsonify({
+                'url': extracted_data,
+                'is_phishing': False,
+                'confidence': 0.0,
+                'label': 'SAFE (Trusted)'
+            })
+
+        # 2. Predict using Model
+        if model:
+             features = extract_features(extracted_data)
+             # extract_features returns a dict, pd.DataFrame expects a list of dicts
+             # But wait, the function above `extract_features` returns a plain dict?
+             # Let's check `check_url`. It constructs a DF inside? 
+             # No, `check_url` calls `extract_features` which returns a dict? 
+             # Wait, in lines 53-87, extract_features returns a dict.
+             # In lines 130-131 of original file: 
+             # features = extract_features(url)
+             # df_features = pd.DataFrame([features])
+             # So we do the same.
+             
+             df_features = pd.DataFrame([features])
+             prediction = model.predict(df_features)[0]
+             probability = model.predict_proba(df_features)[0]
+             
+             return jsonify({
+                'url': extracted_data,
+                'is_phishing': bool(prediction == 1),
+                'confidence': float(max(probability)),
+                'label': 'PHISHING' if prediction == 1 else 'SAFE'
+            })
+        else:
+             # Mock response if model missing
+             return jsonify({
+                 'url': extracted_data,
+                 'is_phishing': False,
+                 'label': 'SAFE (Model Missing)',
+                 'confidence': 0.0
+             })
+
+    except Exception as e:
+        print(f"QR Error: {e}")
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/health', methods=['GET'])
 def health():
     """Health check endpoint."""
-    return jsonify({'status': 'healthy', 'model_loaded': True})
+    return jsonify({'status': 'healthy', 'model_loaded': bool(model is not None)})
 
 if __name__ == '__main__':
     init_db()  # Initialize database on start

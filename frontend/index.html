@@ -100,13 +100,24 @@
                     <input type="text" id="signup-email" class="input-group" placeholder="you@example.com">
                 </div>
                 <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="signup-password" class="input-group"
-                        placeholder="Min 8 chars, 1 letter, 1 number">
+                    <label>
+                        Password
+                        <span class="material-icons-round info-icon">info</span>
+                        <div class="tooltip glass-panel">
+                            <strong>Password Requirements:</strong>
+                            <ul style="margin-top: 5px;">
+                                <li>At least 8 characters long</li>
+                                <li>At least one letter (a-z)</li>
+                                <li>At least one number (0-9)</li>
+                            </ul>
+                        </div>
+                    </label>
+                    <input type="password" id="signup-password" class="input-group" placeholder="Enter your password">
                 </div>
                 <div class="form-group">
                     <label>Confirm Password</label>
-                    <input type="password" id="signup-confirm-password" class="input-group" placeholder="••••••••">
+                    <input type="password" id="signup-confirm-password" class="input-group"
+                        placeholder="Confirm your password">
                 </div>
                 <button type="submit" class="btn btn-primary" style="width: 100%;">Sign Up</button>
                 <p style="text-align: center; margin-top: 1rem; color: var(--text-muted);">

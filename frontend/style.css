@@ -331,19 +331,82 @@ main {
 
 /* Auth Pages */
 .auth-container {
-    max-width: 400px;
+    max-width: 500px;
+    /* Bigger container */
     margin: 4rem auto;
-    padding: 2.5rem;
+    padding: 3rem;
+    /* More padding */
 }
 
 .form-group {
     margin-bottom: 1.5rem;
+    position: relative;
+    /* For tooltip positioning */
 }
 
 .form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.8rem;
+    /* More space below label */
+    font-weight: 600;
+    /* Bolder label */
+    font-size: 1.15rem;
+    /* Bigger label text */
+}
+
+.form-group input {
+    font-size: 1.1rem;
+    padding: 1.25rem;
+    /* Taller inputs */
+    border-radius: 12px;
+    /* Smoother corners */
+}
+
+/* Password Rules Tooltip */
+.info-icon {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    cursor: help;
+    transition: color 0.3s;
+    margin-left: 8px;
+    /* Added spacing */
+}
+
+.info-icon:hover {
+    color: var(--primary);
+}
+
+.tooltip {
+    visibility: hidden;
+    background-color: var(--background);
+    color: var(--text-main);
+    border: 1px solid var(--border);
+    box-shadow: var(--glass-shadow);
+    text-align: left;
+    border-radius: 8px;
+    padding: 1rem;
+    position: absolute;
+    z-index: 10;
+    bottom: 100%;
+    right: 0;
+    width: 280px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+}
+
+.tooltip ul {
+    list-style: disc;
+    margin-left: 1.5rem;
+    color: var(--text-muted);
+}
+
+.info-icon:hover+.tooltip {
+    visibility: visible;
+    opacity: 1;
 }
 
 /* Footer */
