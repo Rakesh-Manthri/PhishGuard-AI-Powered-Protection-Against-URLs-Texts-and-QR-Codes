@@ -64,7 +64,40 @@
     </main>
 
     <footer>
-        <p>&copy; 2024 PhishGuard AI. All rights reserved.</p>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <a href="#" class="logo">
+                    <span class="material-icons-round" style="color: var(--primary);">shield</span>
+                    PhishGuard
+                </a>
+                <p>Advanced AI-powered protection against URLs, QR Codes, and Social Engineering attacks. Your digital
+                    safety is our priority.</p>
+            </div>
+
+            <div class="footer-column">
+                <h4>Product</h4>
+                <div class="footer-links">
+                    <a href="url_detection.html">URL Scanner</a>
+                    <a href="qr_detection.html">QR Code Scanner</a>
+                    <a href="semantic_analysis.html">Text Analysis</a>
+                    <a href="index.html#extension">Browser Extension</a>
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <h4>Company</h4>
+                <div class="footer-links">
+                    <a href="index.html#about">About Us</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Contact Support</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 PhishGuard AI. All rights reserved.</p>
+        </div>
     </footer>
 
     <script src="script.js"></script>
@@ -96,6 +129,10 @@
         function handleFiles(e) {
             const file = e.target.files[0];
             if (file) {
+                if (!file.type.startsWith('image/')) {
+                    alert('Please upload an image file of QR Code.');
+                    return;
+                }
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
                 reader.onloadend = function () {

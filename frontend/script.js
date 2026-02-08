@@ -17,6 +17,7 @@ function handleHashChange() {
     const about = document.getElementById('about');
     const login = document.getElementById('login');
     const signup = document.getElementById('signup');
+    const extension = document.getElementById('extension');
 
     // Only run this logic if these elements exist (i.e. we are on index.html)
     if (!hero || !login) return;
@@ -25,6 +26,7 @@ function handleHashChange() {
     hero.style.display = 'none';
     if (features) features.style.display = 'none';
     if (about) about.style.display = 'none';
+    if (extension) extension.style.display = 'none';
     login.style.display = 'none';
     if (signup) signup.style.display = 'none';
 
@@ -37,6 +39,7 @@ function handleHashChange() {
         hero.style.display = 'block';
         if (features) features.style.display = 'grid'; // Grid for features
         if (about) about.style.display = 'block';
+        if (extension) extension.style.display = 'block';
     }
 }
 

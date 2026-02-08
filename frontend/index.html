@@ -38,26 +38,76 @@
                 QR codes, and semantic content.</p>
             <div class="hero-actions">
                 <a href="url_detection.html" class="btn btn-primary">Start Scanning Now</a>
-                <a href="#about" class="btn btn-secondary">How it Works</a>
+                <a href="#about" class="btn btn-secondary">Learn More</a>
             </div>
         </section>
 
         <section id="features" class="features">
-            <div class="glass-panel feature-card">
+            <div class="glass-panel feature-card" onclick="window.location.href='url_detection.html'"
+                style="cursor: pointer;">
                 <span class="material-icons-round feature-icon">link</span>
                 <h3>URL Detection</h3>
                 <p>Analyze suspicious links instantly with our deep learning models trained on millions of phishing
                     datasets.</p>
             </div>
-            <div class="glass-panel feature-card">
+            <div class="glass-panel feature-card" onclick="window.location.href='qr_detection.html'"
+                style="cursor: pointer;">
                 <span class="material-icons-round feature-icon">qr_code_scanner</span>
                 <h3>QR Code Scanner</h3>
                 <p>Decode and verify QR codes before you scan them. Prevent redirection to malicious mobile sites.</p>
             </div>
-            <div class="glass-panel feature-card">
+            <div class="glass-panel feature-card" onclick="window.location.href='semantic_analysis.html'"
+                style="cursor: pointer;">
                 <span class="material-icons-round feature-icon">text_fields</span>
                 <h3>Semantic Analysis</h3>
                 <p>Detect social engineering in emails and texts. We analyze the intent and urgency of the message.</p>
+            </div>
+        </section>
+
+        <!-- New Extension Section -->
+        <section id="extension" class="glass-panel"
+            style="margin: 4rem auto; text-align: center; padding: 3rem; max-width: 900px;">
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+                <span class="material-icons-round" style="font-size: 4rem; color: var(--primary);">extension</span>
+                <h2 style="font-size: 2.2rem; margin: 0;">PhishGuard Browser Extension</h2>
+                <p style="font-size: 1.1rem; color: var(--text-muted); max-width: 600px; line-height: 1.6;">
+                    Stay safe while you browse. Our extension automatically attempts to detect and block phishing
+                    attempts on every page you visit, protecting you in real-time.
+                </p>
+
+                <div style="display: flex; gap: 15px; margin-top: 1rem; flex-wrap: wrap; justify-content: center;">
+                    <button class="btn btn-primary"
+                        onclick="alert('Download coming soon! Use the online tools for now.')"
+                        style="display: inline-flex; align-items: center;">
+                        <span class="material-icons-round" style="margin-right: 8px;">add_to_queue</span>
+                        Add to Chrome
+                    </button>
+                    <a href="url_detection.html" class="btn btn-secondary"
+                        style="display: inline-flex; align-items: center;">
+                        <span class="material-icons-round" style="margin-right: 8px;">play_arrow</span>
+                        Try Live Demo
+                    </a>
+                </div>
+
+                <div
+                    style="margin-top: 2rem; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); width: 100%;">
+                    <h3 style="margin-bottom: 1rem; font-size: 1.2rem;">Extension Features</h3>
+                    <div
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; text-align: left;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span class="material-icons-round" style="color: #10b981;">check_circle</span>
+                            <span>Real-time URL Scanning</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span class="material-icons-round" style="color: #10b981;">check_circle</span>
+                            <span>Suspicious Domain Alerts</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span class="material-icons-round" style="color: #10b981;">check_circle</span>
+                            <span>Zero-Day Threat Protection</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -65,11 +115,14 @@
             <h2 style="font-size: 2.5rem; margin-bottom: 2rem;">Why PhishGuard?</h2>
             <div class="glass-panel" style="padding: 3rem; text-align: left; max-width: 800px; margin: 0 auto;">
                 <p style="font-size: 1.2rem; line-height: 1.8; color: var(--text-muted);">
-                    Cyber threats are evolving. Traditional blacklists aren't enough. PhishGuard uses state-of-the-art
-                    Natural Language Processing (NLP) and Computer Vision to detect zero-day phishing attacks.
+                    Phishing attacks today are subtle, convincing, and easy to miss.
+                    They often hide inside trusted-looking links, QR codes, and everyday messages.
                     <br><br>
-                    Whether it's a deceptive URL, a malicious QR code planted in public, or a carefully crafted email,
-                    PhishGuard acts as your personal cybersecurity analyst.
+                    PhishGuard helps you verify before you trust.
+                    It analyzes URLs, QR codes, and text to identify phishing patterns and suspicious behavior, giving
+                    you clear, actionable guidance — not vague warnings.
+                    <br><br>
+                    Simple, fast, and built for real-world threats.
                 </p>
             </div>
         </section>
@@ -129,7 +182,40 @@
     </main>
 
     <footer>
-        <p>&copy; 2024 PhishGuard AI. All rights reserved.</p>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <a href="#" class="logo">
+                    <span class="material-icons-round" style="color: var(--primary);">shield</span>
+                    PhishGuard
+                </a>
+                <p>Advanced AI-powered protection against URLs, QR Codes, and Social Engineering attacks. Your digital
+                    safety is our priority.</p>
+            </div>
+
+            <div class="footer-column">
+                <h4>Product</h4>
+                <div class="footer-links">
+                    <a href="url_detection.html">URL Scanner</a>
+                    <a href="qr_detection.html">QR Code Scanner</a>
+                    <a href="semantic_analysis.html">Text Analysis</a>
+                    <a href="index.html#extension">Browser Extension</a>
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <h4>Company</h4>
+                <div class="footer-links">
+                    <a href="index.html#about">About Us</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Contact Support</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 PhishGuard AI. All rights reserved.</p>
+        </div>
     </footer>
 
     <script src="script.js"></script>
